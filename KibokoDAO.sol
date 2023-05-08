@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
-contract KibokoDAO is Ownable, ReentrancyGuard {
+contract DAO is Ownable, ReentrancyGuard {
     using SafeMath for uint256;
 
     uint256 public constant MINIMUM_VOTES = 1;
@@ -63,39 +63,12 @@ contract KibokoDAO is Ownable, ReentrancyGuard {
         totalMembers--;
         emit MemberLeft(_member);
     }
-    
-     function createProposal(string memory _title, string memory _description) public onlyMember {
-        require(bytes(_title).length > 0, "Empty title");
-        require(bytes(_description).length > 0, "Empty description");
-        require(proposalCount < MAX_PROPOSALS, "Too many proposals");
-        Proposal memory newProposal = Proposal({
-            id: proposalCount,
-            title: _title,
-            description: _description,
-            votes: 0,
-            deadline: block.timestamp + PROPOSAL_DURATION,
-            proposer: msg.sender,
-            voters: new VoterRecord[](0),
-            executed: false
-        });
-        proposals.push(newProposal);
-        proposalCount++;
-        emit NewProposal(newProposal.id, newProposal.title);
-    }
-
-    function vote(uint256 _proposalId, bool _support) public onlyMember nonReentrant {
-        Proposal storage proposal = proposals[_proposalId];
-        require(block.timestamp < proposal.deadline, "Proposal deadline passed");
-        require(!proposal.executed, "Proposal has already been executed");
-        require(!proposal.voters[msg.sender].hasVoted, "You have already voted on this proposal");
-
-        proposal.voters.push(VoterRecord);
-           
 
 
+function  makeProposal(address _member,)public onlyMember {
+    require (_member != address(0), "Invalid member address");
 
 
-
-
+}
 
 }
