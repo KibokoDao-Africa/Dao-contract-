@@ -86,11 +86,11 @@ contract DAO is Ownable, ReentrancyGuard {
         emit NewProposal(proposal.id, proposal.title);
     }
 
+    /// @notice Finds the proposal with the matching ID
+    /// @param _proposalId the id to look up
+    /// @return proposal the proposal with the matching ID or -1 if not found
+    /// @dev Uses binary search/divide and conquer
     function getProposalById(uint256 _proposalId) public view returns (Proposal storage) {
-        // binary search to find a proposal by id
-        // this is faster O(log n) than looping through the proposals array O(n)
-        // the proposals are already sorted by id
-
         uint256 left = 0;
         uint256 right = proposals.length.sub(1);
 
