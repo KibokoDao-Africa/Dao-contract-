@@ -70,7 +70,7 @@ contract DAO is Ownable, ReentrancyGuard {
         Proposal memory proposal;
         proposal.id = proposals.length; // incremental proposal id like an auto incrementing primary key in a database
 
-        while (isProposalIdTaken(proposal.id)) {
+        while (getProposalById(proposal.id).id != uint256(-1)) {    // if taken increment until we find an empty slot
             proposal.id = proposal.id.add(1);   // this check is important because some proposals might be deleted and the length of the array will be smaller than the last proposal id
         }
 
@@ -86,30 +86,11 @@ contract DAO is Ownable, ReentrancyGuard {
         emit NewProposal(proposal.id, proposal.title);
     }
 
-    function isProposalIdTaken(uint256 _proposalId) internal view returns (bool) {
-        // binary search to check if the proposal id is taken
+    function getProposalById(uint256 _proposalId) public view returns (Proposal storage) {
+        // binary search to find a proposal by id
         // this is faster O(log n) than looping through the proposals array O(n)
         // the proposals are already sorted by id
 
-        uint256 left = 0;
-        uint256 right = proposals.length.sub(1);
-
-        while (left <= right) {
-            uint256 mid = (left.add(right)).div(2);
-            if (proposals[mid].id == _proposalId) {
-                return true; // ID is taken
-            }
-            if (proposals[mid].id < _proposalId) {
-                left = mid.add(1);
-            } else {
-                right = mid.sub(1);
-            }
-        }
-
-        return false; // ID is not taken
-    }
-
-    function getProposalById(uint256 _proposalId) public view returns (Proposal storage) {
         uint256 left = 0;
         uint256 right = proposals.length.sub(1);
 
